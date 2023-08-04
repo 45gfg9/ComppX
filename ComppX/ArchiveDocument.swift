@@ -1,4 +1,4 @@
-/// ContentView.swift
+/// ArchiveDocument.swift
 ///
 /// ComppX - An open-source archiving utility for macOS
 /// Copyright (C) 2023 45gfg9
@@ -17,17 +17,28 @@
 /// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import SwiftUI
+import UniformTypeIdentifiers
 
-struct ContentView: View {
-  @Binding var document: ArchiveDocument
+final class ArchiveDocument : FileDocument {
+  var text: String
 
-  var body: some View {
-    TextEditor(text: $document.text)
+  init(text: String = "Hello, world!") {
+    self.text = text
   }
-}
 
-struct ContentView_Previews: PreviewProvider {
-  static var previews: some View {
-    ContentView(document: .constant(ArchiveDocument()))
+  static var readableContentTypes: [UTType] { [.plainText] }
+
+  init(configuration: ReadConfiguration) throws {
+    guard let data = configuration.file.regularFileContents,
+          let string = String(data: data, encoding: .utf8)
+    else {
+      throw CocoaError(.fileReadCorruptFile)
+    }
+    text = string
+  }
+
+  func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+    let data = text.data(using: .utf8)!
+    return .init(regularFileWithContents: data)
   }
 }

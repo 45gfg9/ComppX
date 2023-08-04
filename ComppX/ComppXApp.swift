@@ -1,7 +1,7 @@
 /// ComppXApp.swift
 ///
 /// ComppX - An open-source archiving utility for macOS
-/// Copyright (C) 2022 45gfg9
+/// Copyright (C) 2023 45gfg9
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ import SwiftUI
 @main
 struct ComppXApp: App {
   var body: some Scene {
-    WindowGroup {
-      ContentView()
+    DocumentGroup(newDocument: ArchiveDocument()) { file in
+      ContentView(document: file.$document)
     }
   }
 }
